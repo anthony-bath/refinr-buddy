@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Jumbotron, Button } from 'reactstrap';
+import axios from 'axios';
+
+import { endpoint } from '../../config/firebase.config';
 import IdModal from './components/IdModal';
 
 export default class Home extends Component {
@@ -7,6 +10,7 @@ export default class Home extends Component {
     idModal: {
       isOpen: false,
     },
+    loading: false,
   };
 
   onViewSharedClick = () => {
@@ -15,6 +19,22 @@ export default class Home extends Component {
         ...this.state.idModal,
         isOpen: true,
       },
+    });
+  };
+
+  onCreateClick = () => {
+    this.setState({ loading: true }, async () => {
+      try {
+        const result = await axios.post(endpoint.create, {
+          tickets: 10,
+          durationMinutes: 60,
+        });
+
+        this.props.history.push(`${result.data.id}/view`);
+      } catch (ex) {
+        console.log(ex);
+        this.setState({ loading: false });
+      }
     });
   };
 
@@ -29,6 +49,7 @@ export default class Home extends Component {
 
   render() {
     const { history } = this.props;
+    const { loading } = this.state;
 
     return (
       <Container>
@@ -36,8 +57,13 @@ export default class Home extends Component {
           <h1 className="display-3" style={{ fontFamily: 'SignPainter' }}>
             Refinr Buddy
           </h1>
-          <Button className="App-button" color="primary">
-            Start a Shared Refinement
+          <Button
+            className={'App-button'}
+            color={'primary'}
+            disabled={loading}
+            onClick={this.onCreateClick}
+          >
+            Create a Shared Refinement
           </Button>
           <Button
             className="App-button"
