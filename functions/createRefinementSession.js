@@ -23,7 +23,7 @@ module.exports = {
         .set({
           tickets,
           durationMinutes,
-          started: false,
+          status: 0,
         })
         .then(_ => {
           return res.status(201).send({

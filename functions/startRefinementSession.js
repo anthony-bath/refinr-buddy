@@ -21,13 +21,11 @@ module.exports = {
         .then(snapshot => {
           if (snapshot.exists()) {
             const { durationMinutes, tickets } = snapshot.val();
-            const timeForCurrentTicket = durationMinutes / tickets;
             const now = moment();
 
             return ref //eslint-disable-line
               .update({
-                timeForCurrentTicket,
-                started: true,
+                status: 1,
                 startDate: now.toJSON(),
                 endDate: now.add(durationMinutes, 'minutes').toJSON(),
               })

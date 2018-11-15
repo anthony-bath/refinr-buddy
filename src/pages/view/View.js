@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import firebase from 'firebase/app';
 import 'firebase/database';
 
 import { Status } from '../../config/enumeration';
+import Refinement from './components/Refinement';
+import Waiting from './components/Waiting';
+import { getTicketDuration } from '../../utilities';
 
 export default class View extends Component {
   state = {
@@ -31,6 +35,14 @@ export default class View extends Component {
   refinementUpdated = snapshot => {
     const session = snapshot.val();
 
+    if (session.status === Status.InProgress) {
+      session.timeForCurrentTicket = getTicketDuration(
+        moment(),
+        moment(session.endDate),
+        session.tickets
+      );
+    }
+
     this.setState({
       session,
       loading: false,
@@ -39,6 +51,7 @@ export default class View extends Component {
 
   render() {
     const { loading, session } = this.state;
+    const { id } = this.props.match.params;
 
     if (loading) {
       return <div>Loading...</div>;
@@ -50,11 +63,11 @@ export default class View extends Component {
 
     switch (session.status) {
       case Status.NotStarted:
-        return <div>Refinment not yet started!</div>;
+        return <Waiting id={id} />;
       case Status.Completed:
         return <div>The Refinement Session has been completed.</div>;
       case Status.InProgress:
-        return <div>Refinement in progress</div>;
+        return <Refinement session={session} />;
       default:
         return <div>Invalid Refinement Session</div>;
     }
