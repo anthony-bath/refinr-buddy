@@ -22,12 +22,29 @@ module.exports = {
           if (snapshot.exists()) {
             const { durationMinutes, tickets } = snapshot.val();
             const now = moment();
+            const endDate = now.add(durationMinutes, 'minutes').toJSON();
+            const ticketHistoryKey = admin
+              .database()
+              .ref(`refinement/${id}/history`)
+              .push().key;
+            const estimatedDuration = durationMinutes / tickets;
 
-            return ref //eslint-disable-line
+            //eslint-disable-next-line
+            return ref
               .update({
+                endDate,
                 status: 1,
                 startDate: now.toJSON(),
-                endDate: now.add(durationMinutes, 'minutes').toJSON(),
+                history: {
+                  [ticketHistoryKey]: {
+                    estimatedDuration,
+                    ticketNumber: 1,
+                    startDate: now.toJSON(),
+                    estimatedEndDate: now
+                      .add(estimatedDuration, 'minutes')
+                      .toJSON(),
+                  },
+                },
               })
               .then(() => res.status(200).send())
               .catch(() => res.status(400).send({ error: 'Update failed' }));
@@ -38,7 +55,7 @@ module.exports = {
           }
         })
         .catch(ex => {
-          return res.status(400).send(ex);
+          return res.status(400).send({ error: 'Error retrieving' });
         });
     });
   }),
