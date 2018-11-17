@@ -22,29 +22,28 @@ module.exports = {
           if (snapshot.exists()) {
             const { durationMinutes, tickets } = snapshot.val();
             const now = moment();
-            const endDate = now.add(durationMinutes, 'minutes').toJSON();
-            const ticketHistoryKey = admin
-              .database()
-              .ref(`refinement/${id}/history`)
-              .push().key;
+            const endDate = moment(now)
+              .add(durationMinutes, 'minutes')
+              .toJSON();
             const estimatedDuration = durationMinutes / tickets;
+
+            const currentTicket = {
+              estimatedDuration,
+              number: 1,
+              startDate: now.toJSON(),
+              estimatedEndDate: moment(now)
+                .add(estimatedDuration, 'minutes')
+                .toJSON(),
+            };
 
             //eslint-disable-next-line
             return ref
               .update({
+                currentTicket,
                 endDate,
+                remainingTickets: tickets - 1,
                 status: 1,
                 startDate: now.toJSON(),
-                history: {
-                  [ticketHistoryKey]: {
-                    estimatedDuration,
-                    ticketNumber: 1,
-                    startDate: now.toJSON(),
-                    estimatedEndDate: now
-                      .add(estimatedDuration, 'minutes')
-                      .toJSON(),
-                  },
-                },
               })
               .then(() => res.status(200).send())
               .catch(() => res.status(400).send({ error: 'Update failed' }));

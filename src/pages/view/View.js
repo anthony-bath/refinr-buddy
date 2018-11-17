@@ -35,14 +35,6 @@ export default class View extends Component {
   refinementUpdated = snapshot => {
     const session = snapshot.val();
 
-    if (session.status === Status.InProgress) {
-      session.timeForCurrentTicket = getTicketDuration(
-        moment(),
-        moment(session.endDate),
-        session.tickets
-      );
-    }
-
     this.setState({
       session,
       loading: false,

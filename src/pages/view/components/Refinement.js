@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 
 export default class Refinement extends Component {
   state = {
-    time: 0,
+    remaining: 0,
   };
 
   timer = null;
@@ -22,15 +23,20 @@ export default class Refinement extends Component {
   }
 
   initializeTimer = () => {
-    this.setState({ time: this.props.session.timeForCurrentTicket });
+    const { estimatedEndDate } = this.props.session.currentTicket;
+    const remaining = moment
+      .duration(moment(estimatedEndDate).diff(moment()))
+      .asSeconds();
+
+    this.setState({ remaining });
     this.timer = setInterval(this.updateTimer, 1000);
   };
 
   updateTimer = () => {
-    this.setState(prevState => ({ time: prevState.time - 1 }));
+    this.setState(prevState => ({ remaining: prevState.remaining - 1 }));
   };
 
   render() {
-    return <div>{this.state.time}</div>;
+    return <div>{this.state.remaining}</div>;
   }
 }
