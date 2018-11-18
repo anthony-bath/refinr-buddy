@@ -34,6 +34,7 @@ module.exports = {
               estimatedEndDate: moment(now)
                 .add(estimatedDuration, 'minutes')
                 .toJSON(),
+              isLastTicket: tickets === 1,
             };
 
             //eslint-disable-next-line
