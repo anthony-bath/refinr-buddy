@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import firebase from 'firebase/app';
 import 'firebase/database';
 
 import { Status } from '../../config/enumeration';
 import Refinement from './components/Refinement';
 import Waiting from './components/Waiting';
-import { getTicketDuration } from '../../utilities';
 
 export default class View extends Component {
   state = {
@@ -59,7 +57,7 @@ export default class View extends Component {
       case Status.Completed:
         return <div>The Refinement Session has been completed.</div>;
       case Status.InProgress:
-        return <Refinement session={session} />;
+        return <Refinement id={id} session={session} />;
       default:
         return <div>Invalid Refinement Session</div>;
     }

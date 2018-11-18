@@ -72,9 +72,6 @@ export default class Home extends Component {
           >
             View a Shared Refinement
           </Button>
-          <Button className="App-button" color="info">
-            Start a Local Refinement
-          </Button>
         </Jumbotron>
         <IdModal
           isOpen={this.state.idModal.isOpen}

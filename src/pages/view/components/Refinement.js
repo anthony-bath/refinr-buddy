@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import { Button, Container } from 'reactstrap';
+import axios from 'axios';
+
+import { endpoint } from '../../../config/firebase.config';
 
 export default class Refinement extends Component {
   state = {
@@ -13,7 +17,7 @@ export default class Refinement extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.session.tickets !== this.props.session.tickets) {
+    if (prevProps.session !== this.props.session) {
       if (this.timer) {
         clearInterval(this.timer);
       }
@@ -36,7 +40,27 @@ export default class Refinement extends Component {
     this.setState(prevState => ({ remaining: prevState.remaining - 1 }));
   };
 
+  onNextClick = () => {
+    const { id } = this.props;
+    axios.post(endpoint.next, { id });
+  };
+
   render() {
-    return <div>{this.state.remaining}</div>;
+    return (
+      <Container>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <span>{this.state.remaining}</span>
+          <Button color={'primary'} onClick={this.onNextClick}>
+            Next Ticket
+          </Button>
+        </div>
+      </Container>
+    );
   }
 }
