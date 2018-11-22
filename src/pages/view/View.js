@@ -5,6 +5,7 @@ import 'firebase/database';
 import { Status } from '../../config/enumeration';
 import Refinement from './components/Refinement';
 import Waiting from './components/Waiting';
+import Completed from './components/Completed';
 
 export default class View extends Component {
   state = {
@@ -42,6 +43,7 @@ export default class View extends Component {
   render() {
     const { loading, session } = this.state;
     const { id } = this.props.match.params;
+    const { history } = this.props;
 
     if (loading) {
       return <div>Loading...</div>;
@@ -55,7 +57,7 @@ export default class View extends Component {
       case Status.NotStarted:
         return <Waiting id={id} />;
       case Status.Completed:
-        return <div>The Refinement Session has been completed.</div>;
+        return <Completed history={history} />;
       case Status.InProgress:
         return <Refinement id={id} session={session} />;
       default:

@@ -9,6 +9,7 @@ export default class Waiting extends Component {
 
     axios.post(endpoint.start, { id });
   };
+
   render() {
     return (
       <div>
