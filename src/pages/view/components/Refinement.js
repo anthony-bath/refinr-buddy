@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
 import { Button, Container, Row, Col } from 'reactstrap';
 import axios from 'axios';
 
 import { endpoint } from '../../../config/firebase.config';
+
+momentDurationFormatSetup(moment);
 
 export default class Refinement extends Component {
   state = {
@@ -23,6 +26,12 @@ export default class Refinement extends Component {
       }
 
       this.initializeTimer();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.timer) {
+      clearInterval(this.timer);
     }
   }
 
@@ -51,11 +60,15 @@ export default class Refinement extends Component {
   };
 
   render() {
+    const { remaining } = this.state;
+
     return (
       <Container>
         <Row>
           <Col>
-            <span>{this.state.remaining}</span>
+            <span>
+              {moment.duration(remaining, 's').format('mm:ss', { trim: false })}
+            </span>
           </Col>
         </Row>
         <Row>

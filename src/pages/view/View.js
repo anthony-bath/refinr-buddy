@@ -48,9 +48,7 @@ export default class View extends Component {
     if (loading) {
       return <div>Loading...</div>;
     } else if (!session) {
-      return (
-        <div>Refinement Session Id {this.props.match.params.id} not found.</div>
-      );
+      return <div>Refinement Session Id {id} not found.</div>;
     }
 
     switch (session.status) {
