@@ -11,6 +11,7 @@ momentDurationFormatSetup(moment);
 export default class Refinement extends Component {
   state = {
     remaining: 0,
+    loading: false,
   };
 
   timer = null;
@@ -19,13 +20,19 @@ export default class Refinement extends Component {
     this.initializeTimer();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.session !== this.props.session) {
       if (this.timer) {
         clearInterval(this.timer);
       }
 
       this.initializeTimer();
+    }
+
+    if (!prevState.loading && this.state.loading) {
+      document.body.className = 'App-loading';
+    } else if (!this.state.loading && prevState.loading) {
+      document.body.className = '';
     }
   }
 
@@ -41,7 +48,7 @@ export default class Refinement extends Component {
       .duration(moment(estimatedEndDate).diff(moment()))
       .asSeconds();
 
-    this.setState({ remaining });
+    this.setState({ remaining, loading: false });
     this.timer = setInterval(this.updateTimer, 1000);
   };
 
@@ -51,7 +58,8 @@ export default class Refinement extends Component {
 
   onNextClick = () => {
     const { id } = this.props;
-    axios.post(endpoint.next, { id });
+
+    this.setState({ loading: true }, () => axios.post(endpoint.next, { id }));
   };
 
   onEndClick = () => {
@@ -60,26 +68,45 @@ export default class Refinement extends Component {
   };
 
   render() {
-    const { remaining } = this.state;
+    const { remaining, loading } = this.state;
+    const btnClassName = loading ? 'App-btn--loading' : '';
 
     return (
       <Container>
         <Row>
-          <Col>
-            <span>
-              {moment.duration(remaining, 's').format('mm:ss', { trim: false })}
-            </span>
+          <Col style={{ textAlign: 'center' }}>
+            <h1>
+              {loading ? (
+                <span>Loading...</span>
+              ) : (
+                <span>
+                  {moment
+                    .duration(remaining, 's')
+                    .format('mm:ss', { trim: false })}
+                </span>
+              )}
+            </h1>
           </Col>
         </Row>
         <Row>
-          <Col>
-            <Button color={'primary'} onClick={this.onNextClick}>
-              Next Ticket
+          <Col style={{ textAlign: 'center' }}>
+            <Button
+              className={btnClassName}
+              color={'danger'}
+              disabled={loading}
+              onClick={this.onEndClick}
+            >
+              End Refinement
             </Button>
           </Col>
-          <Col>
-            <Button color={'danger'} onClick={this.onEndClick}>
-              End Refinement
+          <Col style={{ textAlign: 'center' }}>
+            <Button
+              className={btnClassName}
+              color={'primary'}
+              onClick={this.onNextClick}
+              disabled={loading}
+            >
+              Next Ticket
             </Button>
           </Col>
         </Row>

@@ -1,3 +1,7 @@
 .App-button {
   margin: 0.5rem;
 }
+
+.App-btn--loading {
+  cursor: wait;
+}

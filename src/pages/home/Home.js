@@ -68,6 +68,7 @@ export default class Home extends Component {
           <Button
             className="App-button"
             color="success"
+            disabled={loading}
             onClick={this.onViewSharedClick}
           >
             View a Shared Refinement
