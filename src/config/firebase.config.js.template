@@ -1,0 +1,15 @@
+export const config = {
+  apiKey: '',
+  authDomain: '',
+  databaseURL: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+};
+
+export const endpoint = {
+  create: 'https://<yoursite>.cloudfunctions.net/createRefinementSession',
+  start: 'https://<yoursite>.cloudfunctions.net/startRefinementSession',
+  next: 'https://<yoursite>.cloudfunctions.net/nextTicket',
+  end: 'https://<yoursite>.cloudfunctions.net/endRefinementSession',
+};
