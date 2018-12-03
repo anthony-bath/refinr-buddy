@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Container, Jumbotron, Button } from 'reactstrap';
-import axios from 'axios';
 
-import { endpoint } from '../../config/firebase.config';
 import IdModal from './components/IdModal';
+import CreateModal from './components/CreateModal';
 
 export default class Home extends Component {
   state = {
     idModal: {
+      isOpen: false,
+    },
+    createModal: {
       isOpen: false,
     },
     loading: false,
@@ -23,18 +25,11 @@ export default class Home extends Component {
   };
 
   onCreateClick = () => {
-    this.setState({ loading: true }, async () => {
-      try {
-        const result = await axios.post(endpoint.create, {
-          tickets: 10,
-          durationMinutes: 60,
-        });
-
-        this.props.history.push(`${result.data.id}/view`);
-      } catch (ex) {
-        console.log(ex);
-        this.setState({ loading: false });
-      }
+    this.setState({
+      createModal: {
+        ...this.state.createModal,
+        isOpen: true,
+      },
     });
   };
 
@@ -42,6 +37,15 @@ export default class Home extends Component {
     this.setState({
       idModal: {
         ...this.state.idModal,
+        isOpen: false,
+      },
+    });
+  };
+
+  onCloseCreateModal = () => {
+    this.setState({
+      createModal: {
+        ...this.state.createModal,
         isOpen: false,
       },
     });
@@ -78,6 +82,11 @@ export default class Home extends Component {
           isOpen={this.state.idModal.isOpen}
           history={history}
           onClose={this.onCloseIdModal}
+        />
+        <CreateModal
+          isOpen={this.state.createModal.isOpen}
+          history={history}
+          onClose={this.onCloseCreateModal}
         />
       </Container>
     );
