@@ -69,6 +69,7 @@ export default class Refinement extends Component {
 
   render() {
     const { remaining, loading } = this.state;
+    const { isLastTicket } = this.props.session.currentTicket;
     const btnClassName = loading ? 'App-btn--loading' : '';
 
     return (
@@ -99,16 +100,18 @@ export default class Refinement extends Component {
               End Refinement
             </Button>
           </Col>
-          <Col style={{ textAlign: 'center' }}>
-            <Button
-              className={btnClassName}
-              color={'primary'}
-              onClick={this.onNextClick}
-              disabled={loading}
-            >
-              Next Ticket
-            </Button>
-          </Col>
+          {!isLastTicket && (
+            <Col style={{ textAlign: 'center' }}>
+              <Button
+                className={btnClassName}
+                color={'primary'}
+                onClick={this.onNextClick}
+                disabled={loading}
+              >
+                Next Ticket
+              </Button>
+            </Col>
+          )}
         </Row>
       </Container>
     );

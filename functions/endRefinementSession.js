@@ -20,12 +20,30 @@ module.exports = {
         .once('value')
         .then(snapshot => {
           if (snapshot.exists()) {
+            const { currentTicket, history } = snapshot.val();
+
+            const ticketHistoryKey = admin
+              .database()
+              .ref(`refinement/${id}/history`)
+              .push().key;
+
+            const now = moment();
+
             //eslint-disable-next-line
             return ref
               .update({
                 status: 2,
                 remainingTickets: 0,
-                actualEndDate: moment().toJSON(),
+                actualEndDate: now.toJSON(),
+                history: Object.assign(
+                  {
+                    [ticketHistoryKey]: Object.assign(
+                      { actualEndDate: now.toJSON() },
+                      currentTicket
+                    ),
+                  },
+                  history
+                ),
               })
               .then(() => res.status(200).send())
               .catch(() => res.status(400).send({ error: 'Update failed' }));
