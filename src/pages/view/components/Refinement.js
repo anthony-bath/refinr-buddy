@@ -43,9 +43,9 @@ export default class Refinement extends Component {
   }
 
   initializeTimer = () => {
-    const { estimatedEndDate } = this.props.session.currentTicket;
+    const { estimatedEndDate, startDate } = this.props.session.currentTicket;
     const remaining = moment
-      .duration(moment(estimatedEndDate).diff(moment()))
+      .duration(moment(estimatedEndDate).diff(moment(startDate)))
       .asSeconds();
 
     this.setState({ remaining, loading: false });
