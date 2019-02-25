@@ -12,12 +12,17 @@ export default class Refinement extends Component {
   state = {
     remaining: 0,
     loading: false,
+    diff: 0,
   };
 
   timer = null;
 
   componentDidMount() {
-    this.initializeTimer();
+    axios
+      .post(endpoint.time, { now: moment().toJSON() })
+      .then(response =>
+        this.setState({ diff: response.data.diff }, this.initializeTimer)
+      );
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -43,10 +48,11 @@ export default class Refinement extends Component {
   }
 
   initializeTimer = () => {
-    const { estimatedEndDate, startDate } = this.props.session.currentTicket;
-    const remaining = moment
-      .duration(moment(estimatedEndDate).diff(moment(startDate)))
-      .asSeconds();
+    const { estimatedEndDate } = this.props.session.currentTicket;
+
+    const remaining =
+      moment.duration(moment(estimatedEndDate).diff(moment())).asSeconds() -
+      this.state.diff;
 
     this.setState({ remaining, loading: false });
     this.timer = setInterval(this.updateTimer, 1000);
